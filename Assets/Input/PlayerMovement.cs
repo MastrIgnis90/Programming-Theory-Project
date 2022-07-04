@@ -4,21 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement: MonoBehaviour
+public class PlayerMovement: MoveableObject
 {
     [SerializeField] Camera playerCamera;
-    private Rigidbody playerRb;
 
     private Vector3 forceDirection;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] float movementForce = 1f;
-    [SerializeField] float maxSpeed = 5f;
 
     private Vector2 m_move;
 
     private void Awake()
     {
-        playerRb = this.GetComponent<Rigidbody>();
+        thisRb = this.GetComponent<Rigidbody>();
     }
 
     public void FixedUpdate()
@@ -26,16 +24,8 @@ public class PlayerMovement: MonoBehaviour
         forceDirection += m_move.x * movementForce * GetCameraRight(playerCamera);
         forceDirection += m_move.y * movementForce * GetCameraForaward(playerCamera);
 
-        playerRb.AddForce(forceDirection, ForceMode.Impulse);
+        Move(forceDirection);
         forceDirection = Vector3.zero;
-
-        if(playerRb.velocity.y < 0f)
-            playerRb.velocity -= Physics.gravity.y * Time.fixedDeltaTime * Vector3.down;
-        
-        Vector3 horizontalVelocity = playerRb.velocity;
-        horizontalVelocity.y = 0;
-        if (horizontalVelocity.sqrMagnitude > maxSpeed * maxSpeed)
-            playerRb.velocity = horizontalVelocity.normalized * maxSpeed + Vector3.up * playerRb.velocity.y;
         
         LookAt();
     }
@@ -76,11 +66,11 @@ public class PlayerMovement: MonoBehaviour
 
     private void LookAt()
     {
-        Vector3 direction = playerRb.velocity;
+        Vector3 direction = thisRb.velocity;
         direction.y = 0f;
         if (m_move.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
-            this.playerRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            this.thisRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
         else
-            playerRb.angularVelocity = Vector3.zero;
+            thisRb.angularVelocity = Vector3.zero;
     }
 }
