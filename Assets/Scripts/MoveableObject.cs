@@ -34,4 +34,14 @@ public class MoveableObject : MonoBehaviour
         if (horizontalVelocity.sqrMagnitude > m_maxSpeed * m_maxSpeed)
             thisRb.velocity = horizontalVelocity.normalized * m_maxSpeed + Vector3.up * thisRb.velocity.y;
     }
+
+    protected virtual void LookAt()
+    {
+        Vector3 direction = thisRb.velocity;
+        direction.y = 0f;
+        if (direction.sqrMagnitude > 0.1f)
+            this.thisRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        else
+            thisRb.angularVelocity = Vector3.zero;
+    }
 }

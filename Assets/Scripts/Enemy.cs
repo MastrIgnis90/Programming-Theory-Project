@@ -14,7 +14,23 @@ public class Enemy : MoveableObject
     {
         Vector3 steering = player.transform.position - transform.position - thisRb.velocity;
         steering.y = 0;
-
         Move(steering.normalized);
+        LookAt();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.gameObject.name);
+        if(other.CompareTag("Weapon"))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    protected override void LookAt()
+    {
+        var look = player.transform.position - transform.position;
+        look.y = 0;
+        thisRb.rotation = Quaternion.LookRotation(look, Vector3.up);
     }
 }

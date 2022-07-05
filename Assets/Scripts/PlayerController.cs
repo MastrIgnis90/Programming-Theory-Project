@@ -4,15 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement: MoveableObject
+public class PlayerController : MoveableObject
 {
     [SerializeField] Camera playerCamera;
+    [SerializeField] GameObject weaponContainer;
 
     private Vector3 forceDirection;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] float movementForce = 1f;
-
     private Vector2 m_move;
+
+    private bool isAttacking = false;
+
+    public int playerHealth = 5;
 
     private void Awake()
     {
@@ -24,10 +28,23 @@ public class PlayerMovement: MoveableObject
         forceDirection += m_move.x * movementForce * GetCameraRight(playerCamera);
         forceDirection += m_move.y * movementForce * GetCameraForaward(playerCamera);
 
-        Move(forceDirection);
+        if(playerHealth != 0) 
+            Move(forceDirection);
         forceDirection = Vector3.zero;
         
         LookAt();
+
+        if(isAttacking)
+        {
+            if (weaponContainer.transform.localEulerAngles.y < 90)
+                weaponContainer.transform.Rotate(Vector3.up * 10);
+            else
+            {
+                weaponContainer.transform.localEulerAngles = Vector3.zero;
+                isAttacking = false;
+                weaponContainer.SetActive(false);
+            }
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -64,13 +81,20 @@ public class PlayerMovement: MoveableObject
             return false;
     }
 
-    private void LookAt()
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        Vector3 direction = thisRb.velocity;
-        direction.y = 0f;
-        if (m_move.sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
-            this.thisRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
-        else
-            thisRb.angularVelocity = Vector3.zero;
+        if (context.performed)
+        {
+            isAttacking = true;
+            weaponContainer.SetActive(true);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Enemy") && playerHealth > 0)
+        {
+            playerHealth--;
+        }
     }
 }
