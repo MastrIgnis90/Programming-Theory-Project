@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 public class PlayerController : MoveableObject
 {
     [SerializeField] Camera playerCamera;
     [SerializeField] GameObject weaponContainer;
     [SerializeField] Animator playerAnim;
+    [SerializeField] ParticleSystem particleEffects;
 
     private Vector3 forceDirection;
     [SerializeField] float jumpForce = 5f;
@@ -30,7 +32,6 @@ public class PlayerController : MoveableObject
         if(playerHealth != 0) 
             Move(forceDirection);
         forceDirection = Vector3.zero;
-        LookAt();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -80,6 +81,23 @@ public class PlayerController : MoveableObject
                 forceDirection -= Vector3.up * jumpForce * 5;
                 playerAnim.SetTrigger("Attack");
             }
+        }
+    }
+    public void OnWeaponAction(InputAction.CallbackContext context)
+    {
+        switch(context.phase)
+        {
+            case InputActionPhase.Started:
+                playerAnim.SetBool("Holding", true);
+                break;
+            case InputActionPhase.Performed:
+                playerAnim.SetTrigger("HoldAttack");
+                particleEffects.gameObject.SetActive(true);
+                break;
+            case InputActionPhase.Canceled:
+                playerAnim.SetBool("Holding", false);
+                particleEffects.gameObject.SetActive(false);
+                break;
         }
     }
 

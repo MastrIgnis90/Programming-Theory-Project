@@ -15,7 +15,6 @@ public class Enemy : MoveableObject
         Vector3 steering = player.transform.position - transform.position - thisRb.velocity;
         steering.y = 0;
         Move(steering.normalized);
-        LookAt();
     }
 
     private void OnTriggerEnter(Collider other)

@@ -5,7 +5,10 @@ using UnityEngine;
 public class MoveableObject : MonoBehaviour
 {
     protected Rigidbody thisRb;
+    [SerializeField] protected bool moveable = true;
+
     private float m_maxSpeed = 5f;
+
     public float MaxSpeed
     {
         get { return m_maxSpeed; }
@@ -24,15 +27,20 @@ public class MoveableObject : MonoBehaviour
 
     protected virtual void Move(Vector3 mvm)
     {
-        thisRb.AddForce(mvm, ForceMode.Impulse);
+        if (moveable)
+        {
+            thisRb.AddForce(mvm, ForceMode.Impulse);
 
-        if (thisRb.velocity.y < 0f)
-            thisRb.velocity -= Physics.gravity.y * Time.fixedDeltaTime * Vector3.down;
+            if (thisRb.velocity.y < 0f)
+                thisRb.velocity -= Physics.gravity.y * Time.fixedDeltaTime * Vector3.down;
 
-        Vector3 horizontalVelocity = thisRb.velocity;
-        horizontalVelocity.y = 0;
-        if (horizontalVelocity.sqrMagnitude > m_maxSpeed * m_maxSpeed)
-            thisRb.velocity = horizontalVelocity.normalized * m_maxSpeed + Vector3.up * thisRb.velocity.y;
+            Vector3 horizontalVelocity = thisRb.velocity;
+            horizontalVelocity.y = 0;
+            if (horizontalVelocity.sqrMagnitude > m_maxSpeed * m_maxSpeed)
+                thisRb.velocity = horizontalVelocity.normalized * m_maxSpeed + Vector3.up * thisRb.velocity.y;
+
+            LookAt();
+        }
     }
 
     protected virtual void LookAt()
