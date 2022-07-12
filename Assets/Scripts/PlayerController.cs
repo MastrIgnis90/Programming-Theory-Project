@@ -8,13 +8,12 @@ public class PlayerController : MoveableObject
 {
     [SerializeField] Camera playerCamera;
     [SerializeField] GameObject weaponContainer;
+    [SerializeField] Animator playerAnim;
 
     private Vector3 forceDirection;
     [SerializeField] float jumpForce = 5f;
     [SerializeField] float movementForce = 1f;
     private Vector2 m_move;
-
-    private bool isAttacking = false;
 
     public int playerHealth = 5;
 
@@ -31,20 +30,7 @@ public class PlayerController : MoveableObject
         if(playerHealth != 0) 
             Move(forceDirection);
         forceDirection = Vector3.zero;
-        
         LookAt();
-
-        if(isAttacking)
-        {
-            if (weaponContainer.transform.localEulerAngles.y < 90)
-                weaponContainer.transform.Rotate(Vector3.up * 10);
-            else
-            {
-                weaponContainer.transform.localEulerAngles = Vector3.zero;
-                isAttacking = false;
-                weaponContainer.SetActive(false);
-            }
-        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -85,8 +71,15 @@ public class PlayerController : MoveableObject
     {
         if (context.performed)
         {
-            isAttacking = true;
-            weaponContainer.SetActive(true);
+            if(IsOnGround())
+            {
+                playerAnim.SetTrigger("Attack");
+            }
+            else
+            {
+                forceDirection -= Vector3.up * jumpForce * 5;
+                playerAnim.SetTrigger("Attack");
+            }
         }
     }
 
