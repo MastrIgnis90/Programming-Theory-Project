@@ -33,20 +33,23 @@ public class PlayerController : MoveableObject
         if(playerHealth != 0) 
             Move(forceDirection);
         forceDirection = Vector3.zero;
+        ComboAttack();
+    }
 
-        if(isTriggerable && attackBuffer.Count != 0)
+    private void ComboAttack()
+    {
+        if (isTriggerable && attackBuffer.Count != 0)
         {
-            if(attackBuffer.Dequeue().name.Equals("Attack1"))
+            if (attackBuffer.Dequeue().name.Equals("Attack1"))
             {
                 playerAnim.SetTrigger("Attack");
-            } 
+            }
             else
             {
                 playerAnim.SetTrigger("Attack2");
             }
             isTriggerable = false;
         }
-
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -71,8 +74,6 @@ public class PlayerController : MoveableObject
     {
         if(IsOnGround() && context.performed)
         {
-            foreach (InputAction i in attackBuffer)
-                Debug.Log(i.name);
             forceDirection += Vector3.up * jumpForce;
         }
     }
@@ -87,6 +88,7 @@ public class PlayerController : MoveableObject
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        //Logs all face button attack inputs to a buffer to allow for intuative combos
         if (context.performed)
         {
             attackBuffer.Enqueue(context.action);
@@ -95,6 +97,7 @@ public class PlayerController : MoveableObject
 
     public void OnWeaponAction(InputAction.CallbackContext context)
     {
+        //lets player hold button for as long as they want and fires attack on release
         switch(context.phase)
         {
             case InputActionPhase.Started:

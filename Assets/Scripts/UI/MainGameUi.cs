@@ -14,16 +14,19 @@ public class MainGameUi : MonoBehaviour
     [SerializeField] private GameObject healthPipPrefab;
     [SerializeField] private GameObject comboGuide;
     [SerializeField] private GameObject comboItemPrefab;
-    [SerializeField] private Sprite psSquare;
-    [SerializeField] private Sprite psTriangle;
     private ChildAnimatorState[] playerStates;
     private int currentAnim = 0;
 
+    [SerializeField] private Sprite psSquare;
+    [SerializeField] private Sprite psTriangle;
+    [SerializeField] private Sprite psR1;
+    [SerializeField] ButtonDictionary buttonDictionary;
+
     private void Awake()
     {
+        buttonDictionary.Init();
         playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         playerAnim = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
-        //UpdateComboGuide();
 
         playerStates = (playerAnim.runtimeAnimatorController as AnimatorController).layers[0].stateMachine.states;
     }
@@ -45,28 +48,25 @@ public class MainGameUi : MonoBehaviour
             {
                 GameObject.Destroy(child.gameObject);
             }
-            AnimatorState current = null;
+            AnimatorState currentAnimState = null;
             currentAnim = playerAnim.GetCurrentAnimatorStateInfo(0).shortNameHash;
             foreach (ChildAnimatorState i in playerStates)
             {
                 if (i.state.nameHash == currentAnim)
-                    current = i.state;
+                    currentAnimState = i.state;
             }
 
-            if (current != null)
+            if (currentAnimState != null)
             {
-                var transitions = current.transitions;
-                GameObject copy = comboItemPrefab;
+                var transitions = currentAnimState.transitions;
+                GameObject _copy = comboItemPrefab;
                 foreach(AnimatorStateTransition i in transitions)
                 {
                     if(!i.destinationState.name.Equals("Idle"))
                     {
-                        copy.GetComponentInChildren<TextMeshProUGUI>().SetText(i.destinationState.name);
-                        if (i.conditions[0].parameter.Equals("Attack"))
-                            copy.GetComponentInChildren<Image>().sprite = psSquare;
-                        else
-                            copy.GetComponentInChildren<Image>().sprite = psTriangle;
-                        Instantiate(copy, comboGuide.transform);
+                        _copy.GetComponentInChildren<TextMeshProUGUI>().SetText(i.destinationState.name);
+                        _copy.GetComponentInChildren<Image>().sprite = buttonDictionary.GetItem(i.destinationState.tag);
+                        Instantiate(_copy, comboGuide.transform);
                     }
                 }
             }
