@@ -1075,7 +1075,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.6440307, y: 1}
+    m_SensorSize: {x: 1.6622369, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -6731,6 +6731,8 @@ MonoBehaviour:
     type: 3}
   psSquare: {fileID: 21300000, guid: 773f3fbc9ea4dfe4fbab4ba845966e39, type: 3}
   psTriangle: {fileID: 21300000, guid: 211c09d618f50bc41b87ae250eeeb0fd, type: 3}
+  psR1: {fileID: 21300000, guid: 674891bdc5347d345887bf64b08be673, type: 3}
+  buttonDictionary: {fileID: 11400000, guid: 61a73c491c00cd24e887a361f6b6bf34, type: 2}
 --- !u!1 &1471064922
 GameObject:
   m_ObjectHideFlags: 0
