@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Attack2",
+                    "type": "Button",
+                    "id": "69db8880-2125-482d-a620-5432beb04e59",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "WeaponAblility",
                     "type": "Button",
                     "id": "58e668f5-4ca4-4a5e-a5fb-82b3782ac38f",
@@ -192,6 +201,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "WeaponAblility",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e8fdb5d6-9004-4463-b244-ba942a1a2411",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

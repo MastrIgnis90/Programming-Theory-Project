@@ -64,6 +64,15 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Attack2"",
+                    ""type"": ""Button"",
+                    ""id"": ""69db8880-2125-482d-a620-5432beb04e59"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""WeaponAblility"",
                     ""type"": ""Button"",
                     ""id"": ""58e668f5-4ca4-4a5e-a5fb-82b3782ac38f"",
@@ -216,6 +225,17 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
                     ""action"": ""WeaponAblility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8fdb5d6-9004-4463-b244-ba942a1a2411"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -228,6 +248,7 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Attack1 = m_Player.FindAction("Attack1", throwIfNotFound: true);
+        m_Player_Attack2 = m_Player.FindAction("Attack2", throwIfNotFound: true);
         m_Player_WeaponAblility = m_Player.FindAction("WeaponAblility", throwIfNotFound: true);
     }
 
@@ -292,6 +313,7 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Attack1;
+    private readonly InputAction m_Player_Attack2;
     private readonly InputAction m_Player_WeaponAblility;
     public struct PlayerActions
     {
@@ -301,6 +323,7 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Attack1 => m_Wrapper.m_Player_Attack1;
+        public InputAction @Attack2 => m_Wrapper.m_Player_Attack2;
         public InputAction @WeaponAblility => m_Wrapper.m_Player_WeaponAblility;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -323,6 +346,9 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
                 @Attack1.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack1;
                 @Attack1.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack1;
                 @Attack1.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack1;
+                @Attack2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack2;
+                @Attack2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack2;
+                @Attack2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack2;
                 @WeaponAblility.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAblility;
                 @WeaponAblility.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAblility;
                 @WeaponAblility.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnWeaponAblility;
@@ -342,6 +368,9 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
                 @Attack1.started += instance.OnAttack1;
                 @Attack1.performed += instance.OnAttack1;
                 @Attack1.canceled += instance.OnAttack1;
+                @Attack2.started += instance.OnAttack2;
+                @Attack2.performed += instance.OnAttack2;
+                @Attack2.canceled += instance.OnAttack2;
                 @WeaponAblility.started += instance.OnWeaponAblility;
                 @WeaponAblility.performed += instance.OnWeaponAblility;
                 @WeaponAblility.canceled += instance.OnWeaponAblility;
@@ -355,6 +384,7 @@ public partial class @ThirdPersonActions : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnAttack1(InputAction.CallbackContext context);
+        void OnAttack2(InputAction.CallbackContext context);
         void OnWeaponAblility(InputAction.CallbackContext context);
     }
 }

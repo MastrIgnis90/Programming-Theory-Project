@@ -1,16 +1,13 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
 
 public class PlayerController : MoveableObject
 {
     [SerializeField] Camera playerCamera;
     [SerializeField] GameObject weaponContainer;
-    [SerializeField] Animator playerAnim;
     [SerializeField] ParticleSystem particleEffects;
+    private Animator playerAnim;
 
     private Vector3 forceDirection;
     [SerializeField] float jumpForce = 5f;
@@ -18,10 +15,14 @@ public class PlayerController : MoveableObject
     private Vector2 m_move;
 
     public int playerHealth = 5;
+    public Queue<InputAction> attackBuffer;
+    public bool isTriggerable = true;
 
     private void Awake()
     {
+        attackBuffer = new Queue<InputAction>();
         thisRb = this.GetComponent<Rigidbody>();
+        playerAnim = this.GetComponent<Animator>();
     }
 
     public void FixedUpdate()
@@ -32,6 +33,20 @@ public class PlayerController : MoveableObject
         if(playerHealth != 0) 
             Move(forceDirection);
         forceDirection = Vector3.zero;
+
+        if(isTriggerable && attackBuffer.Count != 0)
+        {
+            if(attackBuffer.Dequeue().name.Equals("Attack1"))
+            {
+                playerAnim.SetTrigger("Attack");
+            } 
+            else
+            {
+                playerAnim.SetTrigger("Attack2");
+            }
+            isTriggerable = false;
+        }
+
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -54,8 +69,10 @@ public class PlayerController : MoveableObject
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if(IsOnGround())
+        if(IsOnGround() && context.performed)
         {
+            foreach (InputAction i in attackBuffer)
+                Debug.Log(i.name);
             forceDirection += Vector3.up * jumpForce;
         }
     }
@@ -72,17 +89,10 @@ public class PlayerController : MoveableObject
     {
         if (context.performed)
         {
-            if(IsOnGround())
-            {
-                playerAnim.SetTrigger("Attack");
-            }
-            else
-            {
-                forceDirection -= Vector3.up * jumpForce * 5;
-                playerAnim.SetTrigger("Attack");
-            }
+            attackBuffer.Enqueue(context.action);
         }
     }
+
     public void OnWeaponAction(InputAction.CallbackContext context)
     {
         switch(context.phase)

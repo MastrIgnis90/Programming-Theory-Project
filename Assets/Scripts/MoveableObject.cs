@@ -6,6 +6,7 @@ public class MoveableObject : MonoBehaviour
 {
     protected Rigidbody thisRb;
     [SerializeField] protected bool moveable = true;
+    [SerializeField] protected bool rotatable = true;
 
     private float m_maxSpeed = 5f;
 
@@ -39,17 +40,27 @@ public class MoveableObject : MonoBehaviour
             if (horizontalVelocity.sqrMagnitude > m_maxSpeed * m_maxSpeed)
                 thisRb.velocity = horizontalVelocity.normalized * m_maxSpeed + Vector3.up * thisRb.velocity.y;
 
-            LookAt();
+        } else
+        {
+            thisRb.velocity = Vector3.zero;
         }
+        LookAt();
     }
 
     protected virtual void LookAt()
     {
-        Vector3 direction = thisRb.velocity;
-        direction.y = 0f;
-        if (direction.sqrMagnitude > 0.1f)
-            this.thisRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        if (rotatable)
+        {
+            Vector3 direction = thisRb.velocity;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.1f)
+                this.thisRb.rotation = Quaternion.LookRotation(direction, Vector3.up);
+            else
+                thisRb.angularVelocity = Vector3.zero;
+        }
         else
+        {
             thisRb.angularVelocity = Vector3.zero;
+        }
     }
 }
